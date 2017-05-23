@@ -4,8 +4,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.MDC;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.fluentd.logger.Config;
@@ -100,7 +102,6 @@ public class FluentdAppender extends AppenderSkeleton
     }
   }
 
-  @Override
   public void close()
   {
     if (fluentLogger != null)
@@ -110,7 +111,6 @@ public class FluentdAppender extends AppenderSkeleton
     }
   }
 
-  @Override
   public boolean requiresLayout()
   {
     return false;
@@ -140,12 +140,12 @@ public class FluentdAppender extends AppenderSkeleton
     {
       data.put("NDC", event.getNDC());
     }
-    for (String mdcKey : mdcKeys.split(","))
+
+    for (Map.Entry<Object, Object> entry : (Set<Map.Entry<Object, Object>>) MDC.getContext().entrySet())
     {
-      Object value = event.getMDC(mdcKey);
-      if (value != null)
+      if (entry.getValue() != null)
       {
-        data.put(mdcKey, value);
+        data.put(entry.getKey().toString(), entry.getValue());
       }
     }
 
