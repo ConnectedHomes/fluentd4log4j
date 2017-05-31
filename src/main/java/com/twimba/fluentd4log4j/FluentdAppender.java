@@ -141,11 +141,12 @@ public class FluentdAppender extends AppenderSkeleton
       data.put("NDC", event.getNDC());
     }
 
-    for (Map.Entry<Object, Object> entry : (Set<Map.Entry<Object, Object>>) MDC.getContext().entrySet())
-    {
-      if (entry.getValue() != null)
-      {
-        data.put(entry.getKey().toString(), entry.getValue());
+
+    if (MDC.getContext() != null) {
+      for (Map.Entry<Object, Object> entry : (Set<Map.Entry<Object, Object>>) MDC.getContext().entrySet()) {
+        if (entry.getValue() != null) {
+          data.put(entry.getKey().toString(), entry.getValue());
+        }
       }
     }
 
